@@ -104,9 +104,19 @@
     white-space: nowrap;
 }
 
-.portal-event__badge--members {
-    background: #f3e8ff;
-    color: #7c3aed;
+.portal-event__image .portal-event__badge--members {
+    position: absolute;
+    top: 0.625rem;
+    left: 0.625rem;
+    z-index: 1;
+    background: #000000;
+    color: #ffffff;
+}
+
+.portal-event__body .portal-event__badge--members {
+    background: #000000;
+    color: #ffffff;
+    align-self: flex-start;
 }
 
 /* Description */

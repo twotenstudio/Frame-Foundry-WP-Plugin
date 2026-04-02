@@ -88,6 +88,9 @@ class Portal_Events_Shortcode {
             <?php if ( ! empty( $event['imageUrl'] ) ) : ?>
                 <div class="portal-event__image">
                     <img src="<?php echo esc_url( $event['imageUrl'] ); ?>" alt="<?php echo esc_attr( $event['title'] ); ?>" loading="lazy" />
+                    <?php if ( $is_members_only ) : ?>
+                        <span class="portal-event__badge portal-event__badge--members">Members Only</span>
+                    <?php endif; ?>
                 </div>
             <?php endif; ?>
             <div class="portal-event__body">
@@ -95,7 +98,7 @@ class Portal_Events_Shortcode {
                     <h3 class="portal-event__title"><?php echo esc_html( $event['title'] ); ?></h3>
                     <span class="portal-event__price"><?php echo esc_html( $price ); ?></span>
                 </div>
-                <?php if ( $is_members_only ) : ?>
+                <?php if ( $is_members_only && empty( $event['imageUrl'] ) ) : ?>
                     <span class="portal-event__badge portal-event__badge--members">Members Only</span>
                 <?php endif; ?>
                 <?php if ( ! empty( $event['description'] ) ) : ?>
@@ -110,7 +113,7 @@ class Portal_Events_Shortcode {
                     <?php echo $spots_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                 </div>
                 <a href="<?php echo $booking_url; ?>" class="portal-event__btn" target="_blank" rel="noopener noreferrer">
-                    <?php echo esc_html( $btn_text ); ?> &rarr;
+                    <?php echo esc_html( $btn_text ); ?>
                 </a>
             </div>
         </div>
