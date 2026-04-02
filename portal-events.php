@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Frame Foundry Events
  * Description: Display events from your Frame Foundry portal using the [portal_events] shortcode.
- * Version: 1.4.0
+ * Version: 1.4.1
  * Author: TwoTen Studio
  * Author URI: https://twotenstudio.co.uk
  * License: GPL-2.0-or-later
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'PORTAL_EVENTS_VERSION', '1.4.0' );
+define( 'PORTAL_EVENTS_VERSION', '1.4.1' );
 define( 'PORTAL_EVENTS_PATH', plugin_dir_path( __FILE__ ) );
 define( 'PORTAL_EVENTS_URL', plugin_dir_url( __FILE__ ) );
 
@@ -30,6 +30,12 @@ $portalEventsUpdateChecker = PucFactory::buildUpdateChecker(
 
 // Use GitHub releases as the source
 $portalEventsUpdateChecker->getVcsApi()->enableReleaseAssets();
+
+// Authenticate to avoid GitHub API rate limits
+// Define PORTAL_EVENTS_GITHUB_TOKEN in wp-config.php if needed
+if ( defined( 'PORTAL_EVENTS_GITHUB_TOKEN' ) && PORTAL_EVENTS_GITHUB_TOKEN ) {
+    $portalEventsUpdateChecker->setAuthentication( PORTAL_EVENTS_GITHUB_TOKEN );
+}
 
 // ── Plugin bootstrap ───────────────────────────────────────
 require_once PORTAL_EVENTS_PATH . 'includes/class-portal-events-settings.php';
