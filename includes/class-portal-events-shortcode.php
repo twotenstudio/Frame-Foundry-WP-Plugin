@@ -47,7 +47,16 @@ class Portal_Events_Shortcode {
         $time_str = wp_date( 'H:i', $start ) . ' – ' . wp_date( 'H:i', $end );
 
         $is_members_only = ! empty( $event['membersOnly'] );
-        $price = $is_members_only ? 'Members Only' : self::format_price( $event['nonMemberPrice'] );
+        $member_price    = $event['memberPrice'] ?? null;
+        $non_member_price = $event['nonMemberPrice'] ?? null;
+
+        if ( $is_members_only && $member_price !== null ) {
+            $price = self::format_price( $member_price );
+        } elseif ( ! $is_members_only && $non_member_price !== null ) {
+            $price = self::format_price( $non_member_price );
+        } else {
+            $price = 'Free';
+        }
 
         $spots_html = '';
         if ( ! $is_members_only && $event['spotsLeft'] !== null ) {
