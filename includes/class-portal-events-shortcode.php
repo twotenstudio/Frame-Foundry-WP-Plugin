@@ -171,6 +171,7 @@ class Portal_Events_Shortcode {
                 </div>
                 <div class="portal-event__details">
                     <h3 class="portal-event__title"><?php echo esc_html( $event['title'] ); ?></h3>
+                    <span class="portal-event__price-inline"><?php echo esc_html( $d['price'] ); ?></span>
                     <?php if ( ! empty( $event['location'] ) ) : ?>
                         <span class="portal-event__location"><?php echo esc_html( $event['location'] ); ?></span>
                     <?php endif; ?>

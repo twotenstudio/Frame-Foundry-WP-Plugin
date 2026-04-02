@@ -277,6 +277,13 @@
     letter-spacing: 0.01em;
 }
 
+.portal-event--date-block .portal-event__price-inline {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--portal-events-text);
+    margin: 0;
+}
+
 .portal-event--date-block .portal-event__location {
     font-size: 0.875rem;
     color: var(--portal-events-muted);
