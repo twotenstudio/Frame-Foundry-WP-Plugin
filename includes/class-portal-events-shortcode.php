@@ -11,10 +11,12 @@ class Portal_Events_Shortcode {
     }
 
     public static function render( $atts ) {
+        $options = Portal_Events_Settings::get_options();
+
         $atts = shortcode_atts( [
             'limit'  => 10,
-            'layout' => 'grid',       // grid or list
-            'style'  => 'default',    // default or date-block
+            'layout' => $options['card_layout'],
+            'style'  => $options['card_style'],
         ], $atts, 'portal_events' );
 
         $events = self::fetch_events();

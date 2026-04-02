@@ -184,10 +184,12 @@
     color: inherit;
     cursor: pointer;
     transition: box-shadow 0.15s;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .portal-event--date-block:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     color: inherit;
     text-decoration: none;
 }
@@ -195,9 +197,9 @@
 /* Image area */
 .portal-event__image-area {
     position: relative;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 16 / 10;
     overflow: hidden;
-    background: #f3f4f6;
+    background: #e5e7eb;
 }
 
 .portal-event__image-area img {
@@ -210,9 +212,6 @@
 .portal-event__image-placeholder {
     width: 100%;
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background: #e5e7eb;
 }
 
@@ -229,6 +228,7 @@
 .portal-event__info {
     display: flex;
     align-items: stretch;
+    min-height: 5.5rem;
 }
 
 .portal-event__date-block {
@@ -238,22 +238,22 @@
     justify-content: center;
     background: var(--portal-events-date-bg);
     color: var(--portal-events-date-text);
-    padding: 1rem 1.25rem;
-    min-width: 5rem;
+    padding: 0.75rem 1rem;
+    min-width: 5.5rem;
     flex-shrink: 0;
 }
 
 .portal-event__date-day {
-    font-size: 1.75rem;
-    font-weight: 800;
+    font-size: 2rem;
+    font-weight: 900;
     line-height: 1;
 }
 
 .portal-event__date-month {
-    font-size: 1rem;
-    font-weight: 700;
+    font-size: 1.125rem;
+    font-weight: 800;
     text-transform: uppercase;
-    line-height: 1.2;
+    line-height: 1.3;
 }
 
 /* Details */
@@ -261,27 +261,32 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0.25rem;
-    padding: 1rem 1.25rem;
+    gap: 0.125rem;
+    padding: 0.75rem 1.25rem;
     flex: 1;
     min-width: 0;
 }
 
 .portal-event--date-block .portal-event__title {
-    font-size: 1rem;
-    font-weight: 700;
+    font-size: 1.0625rem;
+    font-weight: 800;
+    color: var(--portal-events-text);
+    text-transform: uppercase;
     margin: 0;
-    line-height: 1.3;
+    line-height: 1.25;
+    letter-spacing: 0.01em;
 }
 
 .portal-event--date-block .portal-event__location {
     font-size: 0.875rem;
     color: var(--portal-events-muted);
+    margin: 0;
 }
 
 .portal-event--date-block .portal-event__time {
     font-size: 0.875rem;
     color: var(--portal-events-muted);
+    margin: 0;
 }
 
 /* Responsive */

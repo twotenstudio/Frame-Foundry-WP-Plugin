@@ -17,8 +17,8 @@ class Portal_Events_Settings {
 
     public static function add_menu() {
         add_options_page(
-            'Portal Events',
-            'Portal Events',
+            'Frame Foundry Events',
+            'Frame Foundry Events',
             'manage_options',
             'portal-events',
             [ __CLASS__, 'render_page' ]
@@ -30,11 +30,12 @@ class Portal_Events_Settings {
             'sanitize_callback' => [ __CLASS__, 'sanitize' ],
         ] );
 
+        // ── Connection ──────────────────────────────────
         add_settings_section(
             'portal_events_main',
             'Connection Settings',
             function () {
-                echo '<p>Connect to your Portal site to fetch event data.</p>';
+                echo '<p>Connect to your Frame Foundry portal to fetch event data.</p>';
             },
             'portal-events'
         );
@@ -42,7 +43,7 @@ class Portal_Events_Settings {
         add_settings_field( 'api_url', 'Portal API URL', function () {
             $options = get_option( self::OPTION_NAME, [] );
             $value   = $options['api_url'] ?? '';
-            echo '<input type="url" name="' . self::OPTION_NAME . '[api_url]" value="' . esc_attr( $value ) . '" class="regular-text" placeholder="https://yourportal.com/api/public/events" />';
+            echo '<input type="url" name="' . self::OPTION_NAME . '[api_url]" value="' . esc_attr( $value ) . '" class="regular-text" placeholder="https://yourportal.framefoundry.co/api/public/events" />';
             echo '<p class="description">The full URL to the public events API endpoint.</p>';
         }, 'portal-events', 'portal_events_main' );
 
@@ -50,7 +51,7 @@ class Portal_Events_Settings {
             $options = get_option( self::OPTION_NAME, [] );
             $value   = $options['api_key'] ?? '';
             echo '<input type="password" name="' . self::OPTION_NAME . '[api_key]" value="' . esc_attr( $value ) . '" class="regular-text" />';
-            echo '<p class="description">Generate this from your Portal admin settings page.</p>';
+            echo '<p class="description">Generate this from your Frame Foundry admin settings page.</p>';
         }, 'portal-events', 'portal_events_main' );
 
         add_settings_field( 'cache_minutes', 'Cache Duration (minutes)', function () {
@@ -60,38 +61,57 @@ class Portal_Events_Settings {
             echo '<p class="description">How long to cache event data. Set to 0 to disable caching.</p>';
         }, 'portal-events', 'portal_events_main' );
 
-        // Display section
+        // ── Display ─────────────────────────────────────
         add_settings_section(
             'portal_events_display',
             'Display Settings',
             function () {
-                echo '<p>Customize how events are displayed on the frontend.</p>';
+                echo '<p>Customize how events are displayed on the frontend. These can be overridden per-shortcode with attributes.</p>';
             },
             'portal-events'
         );
+
+        add_settings_field( 'card_style', 'Card Style', function () {
+            $options = get_option( self::OPTION_NAME, [] );
+            $value   = $options['card_style'] ?? 'default';
+            echo '<select name="' . self::OPTION_NAME . '[card_style]">';
+            echo '<option value="default"' . selected( $value, 'default', false ) . '>Default — image, description, button</option>';
+            echo '<option value="date-block"' . selected( $value, 'date-block', false ) . '>Date Block — image with date panel below</option>';
+            echo '</select>';
+            echo '<p class="description">Choose the card design. Override per-shortcode: <code>[portal_events style="date-block"]</code></p>';
+        }, 'portal-events', 'portal_events_display' );
+
+        add_settings_field( 'card_layout', 'Layout', function () {
+            $options = get_option( self::OPTION_NAME, [] );
+            $value   = $options['card_layout'] ?? 'grid';
+            echo '<select name="' . self::OPTION_NAME . '[card_layout]">';
+            echo '<option value="grid"' . selected( $value, 'grid', false ) . '>Grid</option>';
+            echo '<option value="list"' . selected( $value, 'list', false ) . '>List</option>';
+            echo '</select>';
+            echo '<p class="description">Override per-shortcode: <code>[portal_events layout="list"]</code></p>';
+        }, 'portal-events', 'portal_events_display' );
 
         add_settings_field( 'button_text', 'Button Text', function () {
             $options = get_option( self::OPTION_NAME, [] );
             $value   = $options['button_text'] ?? '';
             echo '<input type="text" name="' . self::OPTION_NAME . '[button_text]" value="' . esc_attr( $value ) . '" class="regular-text" placeholder="Book Now" />';
-            echo '<p class="description">Text shown on the event card button. Leave blank for default ("Book Now" / "View Details").</p>';
+            echo '<p class="description">Text shown on the event card button. Leave blank for default ("Book Now" / "View Details"). Only applies to the Default card style.</p>';
         }, 'portal-events', 'portal_events_display' );
 
-        // Styling section
+        // ── Styling ─────────────────────────────────────
         add_settings_section(
             'portal_events_styling',
-            'Styling',
+            'Custom CSS',
             function () {
-                echo '<p>Add custom CSS to style the event cards. This will be output on pages that use the <code>[portal_events]</code> shortcode.</p>';
+                echo '<p>Add custom CSS to style the event cards.</p>';
             },
             'portal-events'
         );
 
-        add_settings_field( 'custom_css', 'Custom CSS', function () {
+        add_settings_field( 'custom_css', '', function () {
             $options = get_option( self::OPTION_NAME, [] );
             $value   = $options['custom_css'] ?? '';
-            echo '<textarea name="' . self::OPTION_NAME . '[custom_css]" rows="12" cols="60" class="large-text code" placeholder=".portal-event { }&#10;.portal-event__title { }&#10;.portal-event__btn { }">' . esc_textarea( $value ) . '</textarea>';
-            echo '<p class="description">Available classes: <code>.portal-events</code>, <code>.portal-event</code>, <code>.portal-event__image</code>, <code>.portal-event__body</code>, <code>.portal-event__header</code>, <code>.portal-event__title</code>, <code>.portal-event__price</code>, <code>.portal-event__badge</code>, <code>.portal-event__description</code>, <code>.portal-event__meta</code>, <code>.portal-event__date</code>, <code>.portal-event__time</code>, <code>.portal-event__location</code>, <code>.portal-event__spots</code>, <code>.portal-event__btn</code></p>';
+            echo '<textarea name="' . self::OPTION_NAME . '[custom_css]" rows="12" cols="60" class="large-text code" placeholder=".portal-event { }&#10;.portal-event__title { }">' . esc_textarea( $value ) . '</textarea>';
         }, 'portal-events', 'portal_events_styling' );
     }
 
@@ -100,6 +120,8 @@ class Portal_Events_Settings {
         $sanitized['api_url']       = esc_url_raw( $input['api_url'] ?? '' );
         $sanitized['api_key']       = sanitize_text_field( $input['api_key'] ?? '' );
         $sanitized['cache_minutes'] = absint( $input['cache_minutes'] ?? 15 );
+        $sanitized['card_style']    = in_array( $input['card_style'] ?? '', [ 'default', 'date-block' ], true ) ? $input['card_style'] : 'default';
+        $sanitized['card_layout']   = in_array( $input['card_layout'] ?? '', [ 'grid', 'list' ], true ) ? $input['card_layout'] : 'grid';
         $sanitized['button_text']   = sanitize_text_field( $input['button_text'] ?? '' );
         $sanitized['custom_css']    = wp_strip_all_tags( $input['custom_css'] ?? '' );
 
@@ -127,7 +149,7 @@ class Portal_Events_Settings {
     public static function render_page() {
         ?>
         <div class="wrap">
-            <h1>Portal Events Settings</h1>
+            <h1>Frame Foundry Events</h1>
             <form method="post" action="options.php">
                 <?php
                 settings_fields( self::OPTION_GROUP );
@@ -137,7 +159,7 @@ class Portal_Events_Settings {
             </form>
             <hr />
             <h2>Cache</h2>
-            <p>Clear the cached event data to fetch fresh data from the Portal API.</p>
+            <p>Clear the cached event data to fetch fresh data from the API.</p>
             <form method="post">
                 <?php wp_nonce_field( 'portal_events_clear_cache_action' ); ?>
                 <input type="hidden" name="portal_events_clear_cache" value="1" />
@@ -152,6 +174,8 @@ class Portal_Events_Settings {
             'api_url'       => '',
             'api_key'       => '',
             'cache_minutes' => 15,
+            'card_style'    => 'default',
+            'card_layout'   => 'grid',
             'button_text'   => '',
             'custom_css'    => '',
         ] );
