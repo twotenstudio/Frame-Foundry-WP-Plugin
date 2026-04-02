@@ -175,8 +175,8 @@
 /* ── Date-block style ─────────────────────────── */
 
 :root {
-    --portal-events-date-bg: #d97706;
-    --portal-events-date-text: #ffffff;
+    --portal-events-date-bg: #FF8E00;
+    --portal-events-date-text: #000000;
 }
 
 .portal-event--date-block {
@@ -241,6 +241,7 @@
     padding: 0.75rem 1rem;
     min-width: 5.5rem;
     flex-shrink: 0;
+    align-self: stretch;
 }
 
 .portal-event__date-day {
@@ -268,7 +269,7 @@
 }
 
 .portal-event--date-block .portal-event__title {
-    font-size: 1.0625rem;
+    font-size: 18px;
     font-weight: 800;
     color: var(--portal-events-text);
     text-transform: uppercase;
