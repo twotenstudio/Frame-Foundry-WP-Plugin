@@ -60,7 +60,12 @@ class Portal_Events_Shortcode {
 
         $is_full    = $event['spotsLeft'] !== null && $event['spotsLeft'] <= 0;
 
-        if ( $is_members_only ) {
+        $options        = Portal_Events_Settings::get_options();
+        $custom_btn     = $options['button_text'] ?? '';
+
+        if ( ! empty( $custom_btn ) ) {
+            $btn_text = $custom_btn;
+        } elseif ( $is_members_only ) {
             $btn_text = 'View Details';
         } elseif ( $is_full ) {
             $btn_text = 'View Details';

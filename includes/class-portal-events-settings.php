@@ -60,6 +60,23 @@ class Portal_Events_Settings {
             echo '<p class="description">How long to cache event data. Set to 0 to disable caching.</p>';
         }, 'portal-events', 'portal_events_main' );
 
+        // Display section
+        add_settings_section(
+            'portal_events_display',
+            'Display Settings',
+            function () {
+                echo '<p>Customize how events are displayed on the frontend.</p>';
+            },
+            'portal-events'
+        );
+
+        add_settings_field( 'button_text', 'Button Text', function () {
+            $options = get_option( self::OPTION_NAME, [] );
+            $value   = $options['button_text'] ?? '';
+            echo '<input type="text" name="' . self::OPTION_NAME . '[button_text]" value="' . esc_attr( $value ) . '" class="regular-text" placeholder="Book Now" />';
+            echo '<p class="description">Text shown on the event card button. Leave blank for default ("Book Now" / "View Details").</p>';
+        }, 'portal-events', 'portal_events_display' );
+
         // Styling section
         add_settings_section(
             'portal_events_styling',
@@ -83,6 +100,7 @@ class Portal_Events_Settings {
         $sanitized['api_url']       = esc_url_raw( $input['api_url'] ?? '' );
         $sanitized['api_key']       = sanitize_text_field( $input['api_key'] ?? '' );
         $sanitized['cache_minutes'] = absint( $input['cache_minutes'] ?? 15 );
+        $sanitized['button_text']   = sanitize_text_field( $input['button_text'] ?? '' );
         $sanitized['custom_css']    = wp_strip_all_tags( $input['custom_css'] ?? '' );
 
         // Clear cache when settings change
@@ -134,6 +152,7 @@ class Portal_Events_Settings {
             'api_url'       => '',
             'api_key'       => '',
             'cache_minutes' => 15,
+            'button_text'   => '',
             'custom_css'    => '',
         ] );
     }
