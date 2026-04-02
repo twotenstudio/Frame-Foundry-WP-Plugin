@@ -172,6 +172,118 @@
     border-radius: var(--portal-events-radius);
 }
 
+/* ── Date-block style ─────────────────────────── */
+
+:root {
+    --portal-events-date-bg: #d97706;
+    --portal-events-date-text: #ffffff;
+}
+
+.portal-event--date-block {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: box-shadow 0.15s;
+}
+
+.portal-event--date-block:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Image area */
+.portal-event__image-area {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #f3f4f6;
+}
+
+.portal-event__image-area img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.portal-event__image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e5e7eb;
+}
+
+.portal-event__image-area .portal-event__badge--members {
+    position: absolute;
+    top: 0.625rem;
+    left: 0.625rem;
+    z-index: 1;
+    background: #000000;
+    color: #ffffff;
+}
+
+/* Info row: date block + details */
+.portal-event__info {
+    display: flex;
+    align-items: stretch;
+}
+
+.portal-event__date-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--portal-events-date-bg);
+    color: var(--portal-events-date-text);
+    padding: 1rem 1.25rem;
+    min-width: 5rem;
+    flex-shrink: 0;
+}
+
+.portal-event__date-day {
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.portal-event__date-month {
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1.2;
+}
+
+/* Details */
+.portal-event__details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.25rem;
+    padding: 1rem 1.25rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.portal-event--date-block .portal-event__title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.portal-event--date-block .portal-event__location {
+    font-size: 0.875rem;
+    color: var(--portal-events-muted);
+}
+
+.portal-event--date-block .portal-event__time {
+    font-size: 0.875rem;
+    color: var(--portal-events-muted);
+}
+
 /* Responsive */
 @media (max-width: 640px) {
     .portal-events--grid {
