@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Frame Foundry
  * Description: Display events, perks, and shop products from your Frame Foundry portal using [portal_events], [portal_perks], and [portal_shop] shortcodes.
- * Version: 3.1.0
+ * Version: 3.2.0
  * Author: TwoTen Studio
  * Author URI: https://twotenstudio.co.uk
  * License: GPL-2.0-or-later
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'PORTAL_EVENTS_VERSION', '3.1.0' );
+define( 'PORTAL_EVENTS_VERSION', '3.2.0' );
 define( 'PORTAL_EVENTS_PATH', plugin_dir_path( __FILE__ ) );
 define( 'PORTAL_EVENTS_URL', plugin_dir_url( __FILE__ ) );
 

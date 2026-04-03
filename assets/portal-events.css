@@ -94,6 +94,24 @@
     white-space: nowrap;
 }
 
+/* Categories */
+.portal-event__categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+.portal-event__category {
+    display: inline-block;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    border: 1px solid var(--portal-events-border);
+    color: var(--portal-events-muted);
+    white-space: nowrap;
+}
+
 /* Members Only Badge */
 .portal-event__badge {
     display: inline-block;

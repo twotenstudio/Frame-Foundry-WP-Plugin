@@ -14,9 +14,10 @@ class Portal_Events_Shortcode {
         $options = Portal_Events_Settings::get_options();
 
         $atts = shortcode_atts( [
-            'limit'  => 10,
-            'layout' => $options['card_layout'],
-            'style'  => $options['card_style'],
+            'limit'    => 10,
+            'layout'   => $options['card_layout'],
+            'style'    => $options['card_style'],
+            'category' => '', // Filter by category slug
         ], $atts, 'portal_events' );
 
         $events = self::fetch_events();
@@ -27,6 +28,18 @@ class Portal_Events_Shortcode {
 
         if ( empty( $events ) ) {
             return '<div class="portal-events-empty"><p>No upcoming events.</p></div>';
+        }
+
+        // Filter by category slug if specified
+        if ( ! empty( $atts['category'] ) ) {
+            $cat_slug = strtolower( trim( $atts['category'] ) );
+            $events = array_filter( $events, function ( $e ) use ( $cat_slug ) {
+                if ( empty( $e['categories'] ) ) return false;
+                foreach ( $e['categories'] as $cat ) {
+                    if ( ( $cat['slug'] ?? '' ) === $cat_slug ) return true;
+                }
+                return false;
+            } );
         }
 
         $events = array_slice( $events, 0, (int) $atts['limit'] );
@@ -112,6 +125,7 @@ class Portal_Events_Shortcode {
             'booking_url'     => esc_url( $event['bookingUrl'] ),
             'day'             => wp_date( 'd', $start ),
             'month'           => strtoupper( wp_date( 'M', $start ) ),
+            'categories'      => $event['categories'] ?? [],
         ];
     }
 
@@ -137,6 +151,13 @@ class Portal_Events_Shortcode {
                 </div>
                 <?php if ( $d['is_members_only'] && empty( $event['imageUrl'] ) ) : ?>
                     <span class="portal-event__badge portal-event__badge--members">Members Only</span>
+                <?php endif; ?>
+                <?php if ( ! empty( $d['categories'] ) ) : ?>
+                    <div class="portal-event__categories">
+                        <?php foreach ( $d['categories'] as $cat ) : ?>
+                            <span class="portal-event__category"><?php echo esc_html( $cat['name'] ); ?></span>
+                        <?php endforeach; ?>
+                    </div>
                 <?php endif; ?>
                 <?php if ( ! empty( $event['description'] ) ) : ?>
                     <p class="portal-event__description"><?php echo esc_html( wp_trim_words( $event['description'], 25 ) ); ?></p>
