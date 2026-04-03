@@ -472,6 +472,11 @@
     color: var(--portal-events-accent-text);
 }
 
+.portal-shop-product__badge--members {
+    background: #000000;
+    color: #ffffff;
+}
+
 .portal-shop-product__body {
     padding: 1rem;
     display: flex;

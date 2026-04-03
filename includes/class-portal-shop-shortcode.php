@@ -50,9 +50,10 @@ class Portal_Shop_Shortcode {
     }
 
     private static function render_card( $product ) {
-        $has_image  = ! empty( $product['imageUrl'] );
-        $buy_url    = ! empty( $product['buyUrl'] ) ? esc_url( $product['buyUrl'] ) : '#';
-        $type       = $product['type'] ?? 'PHYSICAL';
+        $has_image      = ! empty( $product['imageUrl'] );
+        $buy_url        = ! empty( $product['buyUrl'] ) ? esc_url( $product['buyUrl'] ) : '#';
+        $type           = $product['type'] ?? 'PHYSICAL';
+        $is_members_only = ! empty( $product['membersOnly'] );
         $variants   = $product['variants'] ?? [];
         $min_price  = isset( $product['minPrice'] ) ? (int) $product['minPrice'] : null;
         $lowest     = isset( $product['lowestPrice'] ) ? (int) $product['lowestPrice'] : null;
@@ -91,7 +92,9 @@ class Portal_Shop_Shortcode {
             <?php if ( $has_image ) : ?>
                 <div class="portal-shop-product__image">
                     <img src="<?php echo esc_url( $product['imageUrl'] ); ?>" alt="<?php echo esc_attr( $product['name'] ); ?>" loading="lazy" />
-                    <?php if ( $type === 'DIGITAL' ) : ?>
+                    <?php if ( $is_members_only ) : ?>
+                        <span class="portal-shop-product__badge portal-shop-product__badge--members">Members Only</span>
+                    <?php elseif ( $type === 'DIGITAL' ) : ?>
                         <span class="portal-shop-product__badge">Digital</span>
                     <?php endif; ?>
                 </div>
