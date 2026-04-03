@@ -298,6 +298,120 @@
     margin: 0;
 }
 
+/* ── Perks ─────────────────────────────────────── */
+
+.portal-perks--grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--portal-events-gap);
+}
+
+.portal-perks--list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--portal-events-gap);
+}
+
+.portal-perk {
+    background: var(--portal-events-bg);
+    border: 1px solid var(--portal-events-border);
+    border-radius: var(--portal-events-radius);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.portal-perks--list .portal-perk {
+    flex-direction: row;
+}
+
+.portal-perk__image {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+}
+
+.portal-perks--list .portal-perk__image {
+    width: 200px;
+    flex-shrink: 0;
+    aspect-ratio: auto;
+}
+
+.portal-perk__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.portal-perk__image .portal-perk__badge {
+    position: absolute;
+    top: 0.625rem;
+    left: 0.625rem;
+    z-index: 1;
+}
+
+.portal-perk__badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+    white-space: nowrap;
+    background: #000000;
+    color: #ffffff;
+}
+
+.portal-perk__body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.portal-perk__title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--portal-events-text);
+    margin: 0;
+    line-height: 1.3;
+}
+
+.portal-perk__description {
+    font-size: 0.875rem;
+    color: var(--portal-events-muted);
+    line-height: 1.5;
+}
+
+.portal-perk__description a {
+    color: var(--portal-events-accent);
+    text-decoration: underline;
+}
+
+.portal-perk__link {
+    display: inline-block;
+    margin-top: auto;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--portal-events-accent);
+    text-decoration: none;
+}
+
+.portal-perk__link:hover {
+    text-decoration: underline;
+}
+
+/* Error / Empty - perks */
+.portal-perks-error,
+.portal-perks-empty {
+    padding: 2rem;
+    text-align: center;
+    color: var(--portal-events-muted);
+    border: 1px solid var(--portal-events-border);
+    border-radius: var(--portal-events-radius);
+}
+
 /* Responsive */
 @media (max-width: 640px) {
     .portal-events--grid {
@@ -309,6 +423,19 @@
     }
 
     .portal-events--list .portal-event__image {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+    }
+
+    .portal-perks--grid {
+        grid-template-columns: 1fr;
+    }
+
+    .portal-perks--list .portal-perk {
+        flex-direction: column;
+    }
+
+    .portal-perks--list .portal-perk__image {
         width: 100%;
         aspect-ratio: 16 / 9;
     }
