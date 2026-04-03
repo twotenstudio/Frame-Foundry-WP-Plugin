@@ -129,13 +129,22 @@ class Portal_Events_Shortcode {
         ];
     }
 
+    private static function get_category_classes( $categories ) {
+        if ( empty( $categories ) ) return '';
+        $classes = array_map( function ( $cat ) {
+            return 'category-' . sanitize_html_class( $cat['slug'] ?? $cat['name'] );
+        }, $categories );
+        return ' ' . implode( ' ', $classes );
+    }
+
     /**
      * Default card style
      */
     private static function render_card( $event ) {
         $d = self::get_event_data( $event );
+        $cat_classes = self::get_category_classes( $d['categories'] );
         ?>
-        <div class="portal-event">
+        <div class="portal-event<?php echo esc_attr( $cat_classes ); ?>">
             <?php if ( ! empty( $event['imageUrl'] ) ) : ?>
                 <div class="portal-event__image">
                     <img src="<?php echo esc_url( $event['imageUrl'] ); ?>" alt="<?php echo esc_attr( $event['title'] ); ?>" loading="lazy" />
@@ -183,8 +192,9 @@ class Portal_Events_Shortcode {
      */
     private static function render_card_date_block( $event ) {
         $d = self::get_event_data( $event );
+        $cat_classes = self::get_category_classes( $d['categories'] );
         ?>
-        <a href="<?php echo $d['booking_url']; ?>" class="portal-event portal-event--date-block" target="_blank" rel="noopener noreferrer">
+        <a href="<?php echo $d['booking_url']; ?>" class="portal-event portal-event--date-block<?php echo esc_attr( $cat_classes ); ?>" target="_blank" rel="noopener noreferrer">
             <div class="portal-event__image-area">
                 <?php if ( ! empty( $event['imageUrl'] ) ) : ?>
                     <img src="<?php echo esc_url( $event['imageUrl'] ); ?>" alt="<?php echo esc_attr( $event['title'] ); ?>" loading="lazy" />
