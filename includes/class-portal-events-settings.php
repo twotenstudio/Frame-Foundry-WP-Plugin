@@ -98,6 +98,13 @@ class Portal_Events_Settings {
             echo '<p class="description">Text shown on the event card button. Leave blank for default ("Book Now" / "View Details"). Only applies to the Default card style.</p>';
         }, 'portal-events', 'portal_events_display' );
 
+        add_settings_field( 'shop_button_text', 'Shop Button Text', function () {
+            $options = get_option( self::OPTION_NAME, [] );
+            $value   = $options['shop_button_text'] ?? '';
+            echo '<input type="text" name="' . self::OPTION_NAME . '[shop_button_text]" value="' . esc_attr( $value ) . '" class="regular-text" placeholder="Buy Now" />';
+            echo '<p class="description">Text shown on shop product card buttons. Leave blank for default ("Buy Now").</p>';
+        }, 'portal-events', 'portal_events_display' );
+
         // ── Styling ─────────────────────────────────────
         add_settings_section(
             'portal_events_styling',
@@ -123,6 +130,7 @@ class Portal_Events_Settings {
         $sanitized['card_style']    = in_array( $input['card_style'] ?? '', [ 'default', 'date-block' ], true ) ? $input['card_style'] : 'default';
         $sanitized['card_layout']   = in_array( $input['card_layout'] ?? '', [ 'grid', 'list' ], true ) ? $input['card_layout'] : 'grid';
         $sanitized['button_text']   = sanitize_text_field( $input['button_text'] ?? '' );
+        $sanitized['shop_button_text'] = sanitize_text_field( $input['shop_button_text'] ?? '' );
         $sanitized['custom_css']    = wp_strip_all_tags( $input['custom_css'] ?? '' );
 
         // Clear cache when settings change
@@ -177,6 +185,7 @@ class Portal_Events_Settings {
             'card_style'    => 'default',
             'card_layout'   => 'grid',
             'button_text'   => '',
+            'shop_button_text' => '',
             'custom_css'    => '',
         ] );
     }

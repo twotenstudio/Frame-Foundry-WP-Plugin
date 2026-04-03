@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: Frame Foundry Events & Perks
- * Description: Display events and perks from your Frame Foundry portal using [portal_events] and [portal_perks] shortcodes.
- * Version: 2.0.0
+ * Plugin Name: Frame Foundry
+ * Description: Display events, perks, and shop products from your Frame Foundry portal using [portal_events], [portal_perks], and [portal_shop] shortcodes.
+ * Version: 3.0.0
  * Author: TwoTen Studio
  * Author URI: https://twotenstudio.co.uk
  * License: GPL-2.0-or-later
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'PORTAL_EVENTS_VERSION', '2.0.0' );
+define( 'PORTAL_EVENTS_VERSION', '3.0.0' );
 define( 'PORTAL_EVENTS_PATH', plugin_dir_path( __FILE__ ) );
 define( 'PORTAL_EVENTS_URL', plugin_dir_url( __FILE__ ) );
 
@@ -41,12 +41,14 @@ if ( defined( 'PORTAL_EVENTS_GITHUB_TOKEN' ) && PORTAL_EVENTS_GITHUB_TOKEN ) {
 require_once PORTAL_EVENTS_PATH . 'includes/class-portal-events-settings.php';
 require_once PORTAL_EVENTS_PATH . 'includes/class-portal-events-shortcode.php';
 require_once PORTAL_EVENTS_PATH . 'includes/class-portal-perks-shortcode.php';
+require_once PORTAL_EVENTS_PATH . 'includes/class-portal-shop-shortcode.php';
 
 // Initialise
 add_action( 'init', function () {
     Portal_Events_Settings::init();
     Portal_Events_Shortcode::init();
     Portal_Perks_Shortcode::init();
+    Portal_Shop_Shortcode::init();
 } );
 
 // Enqueue styles when either shortcode is present
@@ -58,8 +60,9 @@ add_action( 'wp_enqueue_scripts', function () {
 
     $has_events = has_shortcode( $post->post_content, 'portal_events' );
     $has_perks  = has_shortcode( $post->post_content, 'portal_perks' );
+    $has_shop   = has_shortcode( $post->post_content, 'portal_shop' );
 
-    if ( $has_events || $has_perks ) {
+    if ( $has_events || $has_perks || $has_shop ) {
         wp_enqueue_style(
             'portal-events',
             PORTAL_EVENTS_URL . 'assets/portal-events.css',
