@@ -223,6 +223,37 @@ class Portal_Events_Shortcode {
         <?php
     }
 
+    /**
+     * Get unique categories from all events.
+     */
+    public static function get_categories() {
+        $events = self::fetch_events();
+        if ( is_wp_error( $events ) || empty( $events ) ) {
+            return [];
+        }
+
+        $seen = [];
+        $categories = [];
+        foreach ( $events as $event ) {
+            if ( empty( $event['categories'] ) ) continue;
+            foreach ( $event['categories'] as $cat ) {
+                $slug = $cat['slug'] ?? sanitize_title( $cat['name'] );
+                if ( isset( $seen[ $slug ] ) ) continue;
+                $seen[ $slug ] = true;
+                $categories[] = [
+                    'slug' => $slug,
+                    'name' => $cat['name'],
+                ];
+            }
+        }
+
+        usort( $categories, function ( $a, $b ) {
+            return strcasecmp( $a['name'], $b['name'] );
+        } );
+
+        return $categories;
+    }
+
     private static function format_price( $cents ) {
         if ( $cents === 0 ) {
             return 'Free';

@@ -70,7 +70,24 @@ add_action( 'wp_enqueue_scripts', function () {
             PORTAL_EVENTS_VERSION
         );
 
-        $options    = Portal_Events_Settings::get_options();
+        $options = Portal_Events_Settings::get_options();
+
+        // Category colour overrides for date-block backgrounds
+        $category_colors = $options['category_colors'] ?? [];
+        if ( ! empty( $category_colors ) ) {
+            $color_css = '';
+            foreach ( $category_colors as $slug => $color ) {
+                $class = sanitize_html_class( $slug );
+                if ( $class && $color ) {
+                    $color_css .= ".portal-event.category-{$class} .portal-event__date-block{background:{$color};}";
+                }
+            }
+            if ( $color_css ) {
+                wp_add_inline_style( 'portal-events', $color_css );
+            }
+        }
+
+        // Custom CSS (added last so it can override everything)
         $custom_css = $options['custom_css'] ?? '';
         if ( ! empty( $custom_css ) ) {
             wp_add_inline_style( 'portal-events', $custom_css );

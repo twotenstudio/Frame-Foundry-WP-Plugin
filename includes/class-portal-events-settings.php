@@ -16,13 +16,24 @@ class Portal_Events_Settings {
     }
 
     public static function add_menu() {
-        add_options_page(
+        $hook = add_options_page(
             'Frame Foundry Events',
             'Frame Foundry Events',
             'manage_options',
             'portal-events',
             [ __CLASS__, 'render_page' ]
         );
+        add_action( 'admin_print_scripts-' . $hook, [ __CLASS__, 'enqueue_admin_scripts' ] );
+    }
+
+    public static function enqueue_admin_scripts() {
+        wp_enqueue_style( 'wp-color-picker' );
+        wp_enqueue_script( 'wp-color-picker' );
+        wp_add_inline_script( 'wp-color-picker', "
+            jQuery(document).ready(function($){
+                $('.portal-color-picker').wpColorPicker();
+            });
+        " );
     }
 
     public static function register_settings() {
@@ -105,6 +116,40 @@ class Portal_Events_Settings {
             echo '<p class="description">Text shown on shop product card buttons. Leave blank for default ("Buy Now").</p>';
         }, 'portal-events', 'portal_events_display' );
 
+        // ── Category Colours ─────────────────────────────
+        add_settings_section(
+            'portal_events_category_colors',
+            'Category Colours',
+            function () {
+                echo '<p>Assign a colour to each event category. The colour is applied as the date-block background.</p>';
+            },
+            'portal-events'
+        );
+
+        add_settings_field( 'category_colors', '', function () {
+            $options    = get_option( self::OPTION_NAME, [] );
+            $colors     = $options['category_colors'] ?? [];
+            $categories = Portal_Events_Shortcode::get_categories();
+
+            if ( empty( $categories ) ) {
+                echo '<p class="description">No categories found. Make sure your API connection is configured and events with categories are available.</p>';
+                return;
+            }
+
+            echo '<table class="form-table portal-category-colors">';
+            foreach ( $categories as $cat ) {
+                $slug       = $cat['slug'];
+                $name       = $cat['name'];
+                $color      = $colors[ $slug ] ?? '';
+                $field_name = self::OPTION_NAME . '[category_colors][' . esc_attr( $slug ) . ']';
+                echo '<tr>';
+                echo '<th scope="row"><label for="cat-color-' . esc_attr( $slug ) . '">' . esc_html( $name ) . '</label></th>';
+                echo '<td><input type="text" id="cat-color-' . esc_attr( $slug ) . '" name="' . esc_attr( $field_name ) . '" value="' . esc_attr( $color ) . '" class="portal-color-picker" data-default-color="" /></td>';
+                echo '</tr>';
+            }
+            echo '</table>';
+        }, 'portal-events', 'portal_events_category_colors' );
+
         // ── Styling ─────────────────────────────────────
         add_settings_section(
             'portal_events_styling',
@@ -132,6 +177,17 @@ class Portal_Events_Settings {
         $sanitized['button_text']   = sanitize_text_field( $input['button_text'] ?? '' );
         $sanitized['shop_button_text'] = sanitize_text_field( $input['shop_button_text'] ?? '' );
         $sanitized['custom_css']    = wp_strip_all_tags( $input['custom_css'] ?? '' );
+
+        $sanitized['category_colors'] = [];
+        if ( ! empty( $input['category_colors'] ) && is_array( $input['category_colors'] ) ) {
+            foreach ( $input['category_colors'] as $slug => $color ) {
+                $slug  = sanitize_key( $slug );
+                $color = sanitize_hex_color( $color );
+                if ( $slug && $color ) {
+                    $sanitized['category_colors'][ $slug ] = $color;
+                }
+            }
+        }
 
         // Clear cache when settings change
         delete_transient( 'portal_events_data' );
@@ -185,8 +241,9 @@ class Portal_Events_Settings {
             'card_style'    => 'default',
             'card_layout'   => 'grid',
             'button_text'   => '',
-            'shop_button_text' => '',
-            'custom_css'    => '',
+            'shop_button_text'  => '',
+            'custom_css'        => '',
+            'category_colors'   => [],
         ] );
     }
 }
