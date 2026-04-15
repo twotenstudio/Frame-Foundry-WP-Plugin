@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Frame Foundry
  * Description: Display events, perks, and shop products from your Frame Foundry portal using [portal_events], [portal_perks], and [portal_shop] shortcodes.
- * Version: 3.2.0
+ * Version: 3.4.0
  * Author: TwoTen Studio
  * Author URI: https://twotenstudio.co.uk
  * License: GPL-2.0-or-later
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'PORTAL_EVENTS_VERSION', '3.2.0' );
+define( 'PORTAL_EVENTS_VERSION', '3.4.0' );
 define( 'PORTAL_EVENTS_PATH', plugin_dir_path( __FILE__ ) );
 define( 'PORTAL_EVENTS_URL', plugin_dir_url( __FILE__ ) );
 
@@ -58,11 +58,12 @@ add_action( 'wp_enqueue_scripts', function () {
         return;
     }
 
-    $has_events = has_shortcode( $post->post_content, 'portal_events' );
-    $has_perks  = has_shortcode( $post->post_content, 'portal_perks' );
-    $has_shop   = has_shortcode( $post->post_content, 'portal_shop' );
+    $has_events     = has_shortcode( $post->post_content, 'portal_events' );
+    $has_categories = has_shortcode( $post->post_content, 'portal_event_categories' );
+    $has_perks      = has_shortcode( $post->post_content, 'portal_perks' );
+    $has_shop       = has_shortcode( $post->post_content, 'portal_shop' );
 
-    if ( $has_events || $has_perks || $has_shop ) {
+    if ( $has_events || $has_categories || $has_perks || $has_shop ) {
         wp_enqueue_style(
             'portal-events',
             PORTAL_EVENTS_URL . 'assets/portal-events.css',

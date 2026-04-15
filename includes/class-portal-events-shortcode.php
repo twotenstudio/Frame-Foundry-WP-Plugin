@@ -8,6 +8,7 @@ class Portal_Events_Shortcode {
 
     public static function init() {
         add_shortcode( 'portal_events', [ __CLASS__, 'render' ] );
+        add_shortcode( 'portal_event_categories', [ __CLASS__, 'render_category_key' ] );
     }
 
     public static function render( $atts ) {
@@ -221,6 +222,32 @@ class Portal_Events_Shortcode {
             </div>
         </a>
         <?php
+    }
+
+    /**
+     * Category key / legend shortcode.
+     */
+    public static function render_category_key( $atts ) {
+        $categories = self::get_categories();
+        if ( empty( $categories ) ) {
+            return '';
+        }
+
+        $options = Portal_Events_Settings::get_options();
+        $colors  = $options['category_colors'] ?? [];
+
+        ob_start();
+        echo '<div class="portal-category-key">';
+        foreach ( $categories as $cat ) {
+            $color = $colors[ $cat['slug'] ] ?? '';
+            $swatch_style = $color ? ' style="background:' . esc_attr( $color ) . ';"' : '';
+            echo '<span class="portal-category-key__item">';
+            echo '<span class="portal-category-key__swatch"' . $swatch_style . '></span>';
+            echo '<span class="portal-category-key__label">' . esc_html( $cat['name'] ) . '</span>';
+            echo '</span>';
+        }
+        echo '</div>';
+        return ob_get_clean();
     }
 
     /**
