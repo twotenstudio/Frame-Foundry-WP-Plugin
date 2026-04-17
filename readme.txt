@@ -4,7 +4,7 @@ Tags: events, membership, booking, portal, frame-foundry
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 3.4.1
+Stable tag: 3.4.2
 License: GPL-2.0-or-later
 
 Display events from your Frame Foundry portal on your WordPress site.
