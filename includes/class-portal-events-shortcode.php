@@ -15,7 +15,7 @@ class Portal_Events_Shortcode {
         $options = Portal_Events_Settings::get_options();
 
         $atts = shortcode_atts( [
-            'limit'    => 10,
+            'limit'    => 0,
             'layout'   => $options['card_layout'],
             'style'    => $options['card_style'],
             'category' => '', // Filter by category slug
@@ -43,7 +43,10 @@ class Portal_Events_Shortcode {
             } );
         }
 
-        $events = array_slice( $events, 0, (int) $atts['limit'] );
+        $limit = (int) $atts['limit'];
+        if ( $limit > 0 ) {
+            $events = array_slice( $events, 0, $limit );
+        }
         $layout = in_array( $atts['layout'], [ 'grid', 'list' ], true ) ? $atts['layout'] : 'grid';
         $style  = in_array( $atts['style'], [ 'default', 'date-block' ], true ) ? $atts['style'] : 'default';
 
@@ -298,12 +301,25 @@ class Portal_Events_Shortcode {
             return new WP_Error( 'not_configured', 'Portal Events plugin is not configured.' );
         }
 
-        // Check cache
         if ( $cache_minutes > 0 ) {
             $cached = get_transient( 'portal_events_data' );
             if ( $cached !== false ) {
                 return $cached;
             }
+        }
+
+        // Request a 12-month window so events beyond the current month are returned.
+        // If the user has already added a months/from/to parameter to the URL, respect it.
+        $parsed_query = [];
+        $query_part   = wp_parse_url( $api_url, PHP_URL_QUERY );
+        if ( $query_part ) {
+            parse_str( $query_part, $parsed_query );
+        }
+        $has_range = isset( $parsed_query['months'] )
+            || isset( $parsed_query['from'] )
+            || isset( $parsed_query['to'] );
+        if ( ! $has_range ) {
+            $api_url = add_query_arg( 'months', 12, $api_url );
         }
 
         $response = wp_remote_get( $api_url, [
