@@ -308,20 +308,6 @@ class Portal_Events_Shortcode {
             }
         }
 
-        // Request a 12-month window so events beyond the current month are returned.
-        // If the user has already added a months/from/to parameter to the URL, respect it.
-        $parsed_query = [];
-        $query_part   = wp_parse_url( $api_url, PHP_URL_QUERY );
-        if ( $query_part ) {
-            parse_str( $query_part, $parsed_query );
-        }
-        $has_range = isset( $parsed_query['months'] )
-            || isset( $parsed_query['from'] )
-            || isset( $parsed_query['to'] );
-        if ( ! $has_range ) {
-            $api_url = add_query_arg( 'months', 12, $api_url );
-        }
-
         $response = wp_remote_get( $api_url, [
             'timeout' => 15,
             'headers' => [
