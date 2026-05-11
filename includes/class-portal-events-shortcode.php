@@ -147,11 +147,14 @@ class Portal_Events_Shortcode {
     private static function render_card( $event ) {
         $d = self::get_event_data( $event );
         $cat_classes = self::get_category_classes( $d['categories'] );
+        $opts        = Portal_Events_Settings::get_options();
+        $img_url     = ! empty( $event['imageUrl'] ) ? $event['imageUrl'] : ( $opts['default_image_url'] ?? '' );
+        $bg_style    = ! empty( $opts['image_bg_color'] ) ? ' style="background-color:' . esc_attr( $opts['image_bg_color'] ) . ';"' : '';
         ?>
         <div class="portal-event<?php echo esc_attr( $cat_classes ); ?>">
-            <?php if ( ! empty( $event['imageUrl'] ) ) : ?>
-                <div class="portal-event__image">
-                    <img src="<?php echo esc_url( $event['imageUrl'] ); ?>" alt="<?php echo esc_attr( $event['title'] ); ?>" loading="lazy" />
+            <?php if ( ! empty( $img_url ) ) : ?>
+                <div class="portal-event__image"<?php echo $bg_style; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+                    <img src="<?php echo esc_url( $img_url ); ?>" alt="<?php echo esc_attr( $event['title'] ); ?>" loading="lazy" />
                     <?php if ( $d['is_members_only'] ) : ?>
                         <span class="portal-event__badge portal-event__badge--members">Members Only</span>
                     <?php endif; ?>
@@ -162,7 +165,7 @@ class Portal_Events_Shortcode {
                     <h3 class="portal-event__title"><?php echo esc_html( $event['title'] ); ?></h3>
                     <span class="portal-event__price"><?php echo esc_html( $d['price'] ); ?></span>
                 </div>
-                <?php if ( $d['is_members_only'] && empty( $event['imageUrl'] ) ) : ?>
+                <?php if ( $d['is_members_only'] && empty( $img_url ) ) : ?>
                     <span class="portal-event__badge portal-event__badge--members">Members Only</span>
                 <?php endif; ?>
                 <?php if ( ! empty( $d['categories'] ) ) : ?>
@@ -197,11 +200,14 @@ class Portal_Events_Shortcode {
     private static function render_card_date_block( $event ) {
         $d = self::get_event_data( $event );
         $cat_classes = self::get_category_classes( $d['categories'] );
+        $opts        = Portal_Events_Settings::get_options();
+        $img_url     = ! empty( $event['imageUrl'] ) ? $event['imageUrl'] : ( $opts['default_image_url'] ?? '' );
+        $bg_style    = ! empty( $opts['image_bg_color'] ) ? ' style="background-color:' . esc_attr( $opts['image_bg_color'] ) . ';"' : '';
         ?>
         <a href="<?php echo $d['booking_url']; ?>" class="portal-event portal-event--date-block<?php echo esc_attr( $cat_classes ); ?>" target="_blank" rel="noopener noreferrer">
-            <div class="portal-event__image-area">
-                <?php if ( ! empty( $event['imageUrl'] ) ) : ?>
-                    <img src="<?php echo esc_url( $event['imageUrl'] ); ?>" alt="<?php echo esc_attr( $event['title'] ); ?>" loading="lazy" />
+            <div class="portal-event__image-area"<?php echo $bg_style; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+                <?php if ( ! empty( $img_url ) ) : ?>
+                    <img src="<?php echo esc_url( $img_url ); ?>" alt="<?php echo esc_attr( $event['title'] ); ?>" loading="lazy" />
                 <?php else : ?>
                     <div class="portal-event__image-placeholder"></div>
                 <?php endif; ?>

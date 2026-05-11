@@ -42,14 +42,17 @@ class Portal_Perks_Shortcode {
 
     private static function render_card( $perk ) {
         $is_members_only = ! empty( $perk['membersOnly'] );
-        $has_image       = ! empty( $perk['imageUrl'] );
+        $opts            = Portal_Events_Settings::get_options();
+        $img_url         = ! empty( $perk['imageUrl'] ) ? $perk['imageUrl'] : ( $opts['default_image_url'] ?? '' );
+        $has_image       = ! empty( $img_url );
+        $bg_style        = ! empty( $opts['image_bg_color'] ) ? ' style="background-color:' . esc_attr( $opts['image_bg_color'] ) . ';"' : '';
         $has_link        = ! empty( $perk['linkUrl'] );
         $link_text       = ! empty( $perk['linkText'] ) ? $perk['linkText'] : 'Learn More';
         ?>
         <div class="portal-perk">
             <?php if ( $has_image ) : ?>
-                <div class="portal-perk__image">
-                    <img src="<?php echo esc_url( $perk['imageUrl'] ); ?>" alt="<?php echo esc_attr( $perk['name'] ); ?>" loading="lazy" />
+                <div class="portal-perk__image"<?php echo $bg_style; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+                    <img src="<?php echo esc_url( $img_url ); ?>" alt="<?php echo esc_attr( $perk['name'] ); ?>" loading="lazy" />
                     <?php if ( $is_members_only ) : ?>
                         <span class="portal-perk__badge">Members Only</span>
                     <?php endif; ?>
