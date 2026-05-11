@@ -50,7 +50,10 @@ class Portal_Shop_Shortcode {
     }
 
     private static function render_card( $product ) {
-        $has_image      = ! empty( $product['imageUrl'] );
+        $opts           = Portal_Events_Settings::get_options();
+        $img_url        = ! empty( $product['imageUrl'] ) ? $product['imageUrl'] : ( $opts['default_image_url'] ?? '' );
+        $has_image      = ! empty( $img_url );
+        $bg_style       = ! empty( $opts['image_bg_color'] ) ? ' style="background-color:' . esc_attr( $opts['image_bg_color'] ) . ';"' : '';
         $buy_url        = ! empty( $product['buyUrl'] ) ? esc_url( $product['buyUrl'] ) : '#';
         $type           = $product['type'] ?? 'PHYSICAL';
         $is_members_only = ! empty( $product['membersOnly'] );
@@ -81,8 +84,7 @@ class Portal_Shop_Shortcode {
             }
         }
 
-        $options = Portal_Events_Settings::get_options();
-        $btn_text = ! empty( $options['shop_button_text'] ) ? $options['shop_button_text'] : 'Buy Now';
+        $btn_text = ! empty( $opts['shop_button_text'] ) ? $opts['shop_button_text'] : 'Buy Now';
         if ( ! $any_in_stock && count( $variants ) > 0 ) {
             $btn_text = 'Out of Stock';
         }
@@ -90,8 +92,8 @@ class Portal_Shop_Shortcode {
         ?>
         <div class="portal-shop-product">
             <?php if ( $has_image ) : ?>
-                <div class="portal-shop-product__image">
-                    <img src="<?php echo esc_url( $product['imageUrl'] ); ?>" alt="<?php echo esc_attr( $product['name'] ); ?>" loading="lazy" />
+                <div class="portal-shop-product__image"<?php echo $bg_style; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+                    <img src="<?php echo esc_url( $img_url ); ?>" alt="<?php echo esc_attr( $product['name'] ); ?>" loading="lazy" />
                     <?php if ( $is_members_only ) : ?>
                         <span class="portal-shop-product__badge portal-shop-product__badge--members">Members Only</span>
                     <?php elseif ( $type === 'DIGITAL' ) : ?>

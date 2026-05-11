@@ -29,9 +29,41 @@ class Portal_Events_Settings {
     public static function enqueue_admin_scripts() {
         wp_enqueue_style( 'wp-color-picker' );
         wp_enqueue_script( 'wp-color-picker' );
+        wp_enqueue_media();
         wp_add_inline_script( 'wp-color-picker', "
             jQuery(document).ready(function($){
                 $('.portal-color-picker').wpColorPicker();
+
+                var frame;
+                $(document).on('click', '.portal-default-image-upload', function(e){
+                    e.preventDefault();
+                    var \$button = $(this);
+                    var \$wrap   = \$button.closest('.portal-default-image-field');
+                    if (frame) { frame.off('select'); }
+                    frame = wp.media({
+                        title: 'Select Default Image',
+                        button: { text: 'Use this image' },
+                        library: { type: 'image' },
+                        multiple: false
+                    });
+                    frame.on('select', function(){
+                        var att = frame.state().get('selection').first().toJSON();
+                        \$wrap.find('.portal-default-image-url').val(att.url);
+                        \$wrap.find('.portal-default-image-id').val(att.id);
+                        \$wrap.find('.portal-default-image-preview').html('<img src=\"' + att.url + '\" style=\"max-width:200px;height:auto;display:block;margin-top:8px;\" />');
+                        \$wrap.find('.portal-default-image-remove').show();
+                    });
+                    frame.open();
+                });
+
+                $(document).on('click', '.portal-default-image-remove', function(e){
+                    e.preventDefault();
+                    var \$wrap = $(this).closest('.portal-default-image-field');
+                    \$wrap.find('.portal-default-image-url').val('');
+                    \$wrap.find('.portal-default-image-id').val('');
+                    \$wrap.find('.portal-default-image-preview').empty();
+                    $(this).hide();
+                });
             });
         " );
     }
@@ -116,6 +148,41 @@ class Portal_Events_Settings {
             echo '<p class="description">Text shown on shop product card buttons. Leave blank for default ("Buy Now").</p>';
         }, 'portal-events', 'portal_events_display' );
 
+        // ── Default Image ───────────────────────────────
+        add_settings_section(
+            'portal_events_default_image',
+            'Default Image',
+            function () {
+                echo '<p>Choose a fallback image shown when an item has no image, and a background colour applied behind images (useful for transparent PNGs).</p>';
+            },
+            'portal-events'
+        );
+
+        add_settings_field( 'default_image', 'Fallback Image', function () {
+            $options = get_option( self::OPTION_NAME, [] );
+            $url     = $options['default_image_url'] ?? '';
+            $id      = $options['default_image_id'] ?? '';
+            echo '<div class="portal-default-image-field">';
+            echo '<input type="hidden" class="portal-default-image-url" name="' . self::OPTION_NAME . '[default_image_url]" value="' . esc_attr( $url ) . '" />';
+            echo '<input type="hidden" class="portal-default-image-id"  name="' . self::OPTION_NAME . '[default_image_id]"  value="' . esc_attr( $id ) . '" />';
+            echo '<button type="button" class="button portal-default-image-upload">Choose Image</button> ';
+            echo '<button type="button" class="button portal-default-image-remove"' . ( $url ? '' : ' style="display:none;"' ) . '>Remove</button>';
+            echo '<div class="portal-default-image-preview">';
+            if ( $url ) {
+                echo '<img src="' . esc_url( $url ) . '" style="max-width:200px;height:auto;display:block;margin-top:8px;" />';
+            }
+            echo '</div>';
+            echo '<p class="description">Used when an event, perk, or product has no image of its own.</p>';
+            echo '</div>';
+        }, 'portal-events', 'portal_events_default_image' );
+
+        add_settings_field( 'image_bg_color', 'Image Background Colour', function () {
+            $options = get_option( self::OPTION_NAME, [] );
+            $value   = $options['image_bg_color'] ?? '';
+            echo '<input type="text" name="' . self::OPTION_NAME . '[image_bg_color]" value="' . esc_attr( $value ) . '" class="portal-color-picker" data-default-color="" />';
+            echo '<p class="description">Background colour shown behind images. Useful when using PNGs with transparency.</p>';
+        }, 'portal-events', 'portal_events_default_image' );
+
         // ── Category Colours ─────────────────────────────
         add_settings_section(
             'portal_events_category_colors',
@@ -176,6 +243,9 @@ class Portal_Events_Settings {
         $sanitized['card_layout']   = in_array( $input['card_layout'] ?? '', [ 'grid', 'list' ], true ) ? $input['card_layout'] : 'grid';
         $sanitized['button_text']   = sanitize_text_field( $input['button_text'] ?? '' );
         $sanitized['shop_button_text'] = sanitize_text_field( $input['shop_button_text'] ?? '' );
+        $sanitized['default_image_url'] = esc_url_raw( $input['default_image_url'] ?? '' );
+        $sanitized['default_image_id']  = absint( $input['default_image_id'] ?? 0 );
+        $sanitized['image_bg_color']    = sanitize_hex_color( $input['image_bg_color'] ?? '' ) ?: '';
         $sanitized['custom_css']    = wp_strip_all_tags( $input['custom_css'] ?? '' );
 
         $sanitized['category_colors'] = [];
@@ -242,6 +312,9 @@ class Portal_Events_Settings {
             'card_layout'   => 'grid',
             'button_text'   => '',
             'shop_button_text'  => '',
+            'default_image_url' => '',
+            'default_image_id'  => 0,
+            'image_bg_color'    => '',
             'custom_css'        => '',
             'category_colors'   => [],
         ] );
