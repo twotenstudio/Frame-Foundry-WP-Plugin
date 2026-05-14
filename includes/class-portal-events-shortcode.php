@@ -126,7 +126,7 @@ class Portal_Events_Shortcode {
             'is_members_only' => $is_members_only,
             'is_full'         => $is_full,
             'btn_text'        => $btn_text,
-            'booking_url'     => esc_url( $event['bookingUrl'] ),
+            'booking_url'     => esc_url( self::normalize_booking_url( $event['bookingUrl'] ?? '' ) ),
             'day'             => wp_date( 'd', $start ),
             'month'           => strtoupper( wp_date( 'M', $start ) ),
             'categories'      => $event['categories'] ?? [],
@@ -295,6 +295,15 @@ class Portal_Events_Shortcode {
             return 'Free';
         }
         return '£' . number_format( $cents / 100, 2 );
+    }
+
+    // Strip the /dashboard/ segment so links go to the public event page,
+    // which now supports guest booking.
+    private static function normalize_booking_url( $url ) {
+        if ( empty( $url ) ) {
+            return $url;
+        }
+        return preg_replace( '#/dashboard/events/#', '/events/', $url, 1 );
     }
 
     private static function fetch_events() {

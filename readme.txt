@@ -4,7 +4,7 @@ Tags: events, membership, booking, portal, frame-foundry
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 4.0.0
+Stable tag: 4.1.0
 License: GPL-2.0-or-later
 
 Display events from your Frame Foundry portal on your WordPress site.
@@ -54,6 +54,9 @@ The plugin uses CSS custom properties for easy styling. Override these in your t
 Or use the Custom CSS box in Settings > Portal Events to add your own styles.
 
 == Changelog ==
+
+= 4.1.0 =
+* Event links now point to the public event page (`/events/...`) instead of the members-only dashboard route, so visitors can book as guests without logging in
 
 = 4.0.0 =
 * Added Default / Fallback Image setting (used when an event, perk, or product has no image)
