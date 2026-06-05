@@ -142,6 +142,22 @@ class Portal_Events_Shortcode {
     }
 
     /**
+     * Build an onerror handler for event images.
+     *
+     * If the image source fails to load (e.g. the Frame Foundry image proxy
+     * returns 500 for a missing S3 object), swap to the configured default
+     * image. `this.onerror=null` runs first so it fires only once and cannot
+     * loop if the fallback itself fails. With no usable fallback, hide the
+     * broken element instead of showing a broken-image icon.
+     */
+    private static function image_fallback_attr( $fallback, $current_src ) {
+        if ( ! empty( $fallback ) && $fallback !== $current_src ) {
+            return ' onerror="this.onerror=null;this.src=\'' . esc_url( $fallback ) . '\';"';
+        }
+        return ' onerror="this.onerror=null;this.style.display=\'none\';"';
+    }
+
+    /**
      * Default card style
      */
     private static function render_card( $event ) {
@@ -154,7 +170,7 @@ class Portal_Events_Shortcode {
         <div class="portal-event<?php echo esc_attr( $cat_classes ); ?>">
             <?php if ( ! empty( $img_url ) ) : ?>
                 <div class="portal-event__image"<?php echo $bg_style; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
-                    <img src="<?php echo esc_url( $img_url ); ?>" alt="<?php echo esc_attr( $event['title'] ); ?>" loading="lazy" />
+                    <img src="<?php echo esc_url( $img_url ); ?>" alt="<?php echo esc_attr( $event['title'] ); ?>" loading="lazy"<?php echo self::image_fallback_attr( $opts['default_image_url'] ?? '', $img_url ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> />
                     <?php if ( $d['is_members_only'] ) : ?>
                         <span class="portal-event__badge portal-event__badge--members">Members Only</span>
                     <?php endif; ?>
@@ -207,7 +223,7 @@ class Portal_Events_Shortcode {
         <a href="<?php echo $d['booking_url']; ?>" class="portal-event portal-event--date-block<?php echo esc_attr( $cat_classes ); ?>" target="_blank" rel="noopener noreferrer">
             <div class="portal-event__image-area"<?php echo $bg_style; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
                 <?php if ( ! empty( $img_url ) ) : ?>
-                    <img src="<?php echo esc_url( $img_url ); ?>" alt="<?php echo esc_attr( $event['title'] ); ?>" loading="lazy" />
+                    <img src="<?php echo esc_url( $img_url ); ?>" alt="<?php echo esc_attr( $event['title'] ); ?>" loading="lazy"<?php echo self::image_fallback_attr( $opts['default_image_url'] ?? '', $img_url ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> />
                 <?php else : ?>
                     <div class="portal-event__image-placeholder"></div>
                 <?php endif; ?>
